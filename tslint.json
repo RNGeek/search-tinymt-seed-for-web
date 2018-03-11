@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-standard"
+  ],
+  "rules": {
+    "no-console": { "severity": "warning" },
+    "ordered-imports": true,
+    "indent": [true, "spaces", 2],
+    "trailing-comma": [true, {"multiline": "always", "singleline": "never"}]
+  }
+}

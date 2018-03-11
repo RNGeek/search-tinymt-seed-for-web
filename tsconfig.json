@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    // "outDir": "./dist",
+    "target": "es5",
+    "lib": ["esnext", "dom"],
+    "declaration": false,
+
+    /* Module Options */
+    "module": "es2015",
+    "moduleResolution": "node",
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+
+    /* Helper Options */
+    "noEmitHelpers": true,
+    "importHelpers": true,
+
+    /* Debug Options */
+    "sourceMap": true,
+    "pretty": true,
+    "locale": "ja"
+  }
+  // "include": ["./src/**/*"],
+  // "exclude": ["./node_modules"]
+}
