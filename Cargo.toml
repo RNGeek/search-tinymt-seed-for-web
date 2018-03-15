@@ -1,0 +1,13 @@
+[package]
+name = "search-tinymt-seed"
+version = "0.1.0"
+authors = ["mizdra <pp.mizdra@gmail.com>"]
+
+[dependencies]
+
+[dependencies.tinymt]
+git = "https://github.com/mizdra/rust-tinymt"
+
+[lib]
+path = "./src/wasm/lib.rs"
+crate-type = ["cdylib"]
