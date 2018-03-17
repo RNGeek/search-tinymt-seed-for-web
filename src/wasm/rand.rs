@@ -1,3 +1,4 @@
+use wasm_bindgen::prelude::*;
 use tinymt::tinymt32;
 
 macro_rules! each_u32 {
@@ -17,7 +18,7 @@ macro_rules! each_u32 {
   };
 }
 
-#[no_mangle]
+#[wasm_bindgen]
 pub fn gen_by_index(seed: u32, index: usize) -> u32 {
   let param = tinymt32::Param {
     mat1: 0x8F7011EE,
@@ -68,7 +69,7 @@ fn get_egg_nature(rng: &mut tinymt32::Rng, has_shiny_charm: bool) -> u32 {
   nature
 }
 
-#[no_mangle]
+#[wasm_bindgen]
 pub fn search_tinymt_seed(
   nature1: u32,
   nature2: u32,

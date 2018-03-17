@@ -7,7 +7,7 @@
     "declaration": false,
 
     /* Module Options */
-    "module": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
 
     /* Strict Type-Checking Options */
