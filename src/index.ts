@@ -1,13 +1,15 @@
-import { toU32Hex } from './util'
+import Vue from 'vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import App from './App.vue'
 
-import('./wasm/lib')
-  .then((module) => {
-    const { search_tinymt_seed } = module
+// Off the hint which displays when devtool is started.
+Vue.config.productionTip = false
 
-    const natures = new Uint32Array([18, 2, 12, 16, 19, 19, 20, 7])
+Vue.use(ElementUI)
 
-    console.time('search_tinymt_seed')
-    const seeds = search_tinymt_seed(natures, false)
-    console.timeEnd('search_tinymt_seed')
-    console.log(Array.from(seeds).map(toU32Hex))
-  })
+// eslint-disable-next-line no-new
+new Vue({
+  el: '#app',
+  render: (h) => h(App),
+})

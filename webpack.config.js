@@ -19,7 +19,20 @@ module.exports = {
 
   module: {
     rules: [
-      { test: /\.ts$/, loader: 'ts-loader' },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        },
+        include: [srcPath],
+      },
+      { test: /\.vue$/, loader: 'vue-loader' },
+      { test: /\.css$/, loader: 'css-loader' },
+      {
+        test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+        loader: 'file-loader',
+      },
     ],
   },
 
