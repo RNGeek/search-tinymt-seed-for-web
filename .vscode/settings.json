@@ -1,6 +1,20 @@
 {
   "files.associations": {
-      "*.vue": "vue"
+    "*.vue": "vue"
   },
   "tslint.enable": false,
+  "eslint.validate": [
+    "javascript",
+	  {
+      "language": "typescript",
+		  "autoFix": true
+	  },
+	  {
+		  "language": "vue",
+		  "autoFix": true
+	  }
+  ],
+  "search.exclude": {
+    "/dist": true
+  },
 }

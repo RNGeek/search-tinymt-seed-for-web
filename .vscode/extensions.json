@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "rust-lang.rust",
-    "eg2.tslint"
+    "dbaeumer.vscode-eslint",
+    "octref.vetur"
   ]
 }

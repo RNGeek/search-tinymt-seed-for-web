@@ -20,7 +20,7 @@ import { toU32Hex } from './util'
 
 export default Vue.extend({
   name: 'App',
-  data() {
+  data () {
     return {
       natures: [18, 2, 12, 16, 19, 19, 20, 7],
       calculating: false,
@@ -29,22 +29,22 @@ export default Vue.extend({
   },
   methods: {
     toU32Hex,
-    async calculate(): Promise<Uint32Array> {
-      const { search_tinymt_seed } = await import ('./wasm/lib')
+    async calculate (): Promise<Uint32Array> {
+      const { search_tinymt_seed: searchTinymtSeed } = await import('./wasm/lib')
 
       const natures = new Uint32Array([18, 2, 12, 16, 19, 19, 20, 7])
       const hasShinyCharm = false
 
       console.time('search_tinymt_seed')
-      const seeds = search_tinymt_seed(natures, hasShinyCharm)
+      const seeds = searchTinymtSeed(natures, hasShinyCharm)
       console.timeEnd('search_tinymt_seed')
       return seeds
     },
-    async onClick(): Promise<void> {
+    async onClick (): Promise<void> {
       this.calculating = true
       this.seeds = Array.from(await this.calculate())
       this.calculating = false
-    }
-  }
+    },
+  },
 })
 </script>

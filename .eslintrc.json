@@ -1,0 +1,14 @@
+{
+  "root": true,
+  "extends": [
+    "plugin:vue/essential",
+    "@vue/standard",
+    "@vue/typescript"
+  ],
+  "rules": {
+    "object-shorthand": ["off", "properties"],
+    "func-names": ["error", "as-needed"],
+    "max-len": ["off"],
+    "comma-dangle": ["error", "always-multiline"]
+  }
+}

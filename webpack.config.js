@@ -25,6 +25,7 @@ module.exports = {
         options: {
           appendTsSuffixTo: [/\.vue$/],
         },
+        include: [srcPath],
       },
       { test: /\.vue$/, loader: 'vue-loader' },
     ],
