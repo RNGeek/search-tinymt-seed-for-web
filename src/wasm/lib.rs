@@ -68,14 +68,17 @@ fn get_egg_nature(rng: &mut tinymt32::Rng, has_shiny_charm: bool) -> u32 {
 
 #[wasm_bindgen]
 pub fn search_tinymt_seed(natures: &[u32], has_shiny_charm: bool) -> Vec<u32> {
+  assert_eq!(natures.len(), 8);
+  natures.iter().for_each(|&nature| assert!(nature < 25));
+
   let mut seeds: Vec<u32> = Vec::new();
+  let param = tinymt32::Param {
+    mat1: 0x8F7011EE,
+    mat2: 0xFC78FF1F,
+    tmat: 0x3793FDFF,
+  };
 
   each_u32!(seed => {
-    let param = tinymt32::Param {
-      mat1: 0x8F7011EE,
-      mat2: 0xFC78FF1F,
-      tmat: 0x3793FDFF,
-    };
     let mut rng = tinymt32::from_seed(param, seed);
 
     let found = natures
@@ -88,4 +91,29 @@ pub fn search_tinymt_seed(natures: &[u32], has_shiny_charm: bool) -> Vec<u32> {
   });
 
   seeds
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  #[ignore]
+  fn case1() {
+    let natures: [u32; 8] = [17, 24, 7, 16, 6, 20, 12, 18];
+    let has_shiny_charm = false;
+    let actual = search_tinymt_seed(&natures, has_shiny_charm);
+    let expected: Vec<u32> = vec![0x0B76_DDAF, 0x261C6F52];
+    assert_eq!(actual, expected);
+  }
+
+  #[test]
+  #[ignore]
+  fn case2() {
+    let natures: [u32; 8] = [17, 19, 24, 7, 5, 18, 1, 16];
+    let has_shiny_charm = true;
+    let actual = search_tinymt_seed(&natures, has_shiny_charm);
+    let expected: Vec<u32> = vec![0x0B76_DDAF];
+    assert_eq!(actual, expected);
+  }
 }
