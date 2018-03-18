@@ -70,28 +70,8 @@ fn get_egg_nature(rng: &mut tinymt32::Rng, has_shiny_charm: bool) -> u32 {
 }
 
 #[wasm_bindgen]
-pub fn search_tinymt_seed(
-  nature1: u32,
-  nature2: u32,
-  nature3: u32,
-  nature4: u32,
-  nature5: u32,
-  nature6: u32,
-  nature7: u32,
-  nature8: u32,
-  has_shiny_charm: bool,
-) -> u32 {
-  let natures = [
-    nature1,
-    nature2,
-    nature3,
-    nature4,
-    nature5,
-    nature6,
-    nature7,
-    nature8,
-  ];
-
+pub fn search_tinymt_seed(natures: &[u32], has_shiny_charm: bool) -> Vec<u32> {
+  let mut seeds: Vec<u32> = Vec::new();
   each_u32!(seed => {
     let param = tinymt32::Param {
       mat1: 0x8F7011EE,
@@ -105,8 +85,8 @@ pub fn search_tinymt_seed(
       .all(|&nature| nature == get_egg_nature(&mut rng, has_shiny_charm));
 
     if found {
-      return seed;
+      seeds.push(seed);
     }
   });
-  0xFFFF_FFFF
+  seeds
 }
