@@ -3,6 +3,8 @@
 
 ## Requirements
 Rust 及び `wasm32-unknown-unknown` ターゲットを有効化する必要があります.
+また `cargo-watch`, `wasm-bindgen-cli` のインストールが必要です.
+
 
 ```bash
 # Rust のインストール
@@ -22,4 +24,21 @@ $ rustc --version
 # ref: https://www.hellorust.com/news/native-wasm-target.html
 $ rustup update
 $ rustup target add wasm32-unknown-unknown --toolchain nightly
+
+
+# `cargo-watch`, `wasm-bindgen-cli` のインストール
+$ cargo install cargo-watch
+$ cargo install wasm-bindgen-cli
+```
+
+## Setup
+```bash
+# Setup
+$ git clone https://github.com/mizdra/search-tinymt-seed.git
+$ cd search-tinymt-seed
+$ cargo check
+$ yarn install
+
+# Start webpack-dev-server
+$ yarn run dev
 ```
