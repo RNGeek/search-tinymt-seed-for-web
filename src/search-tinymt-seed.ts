@@ -2,7 +2,7 @@ import { Tinymt32 } from '@mizdra/tinymt'
 import { toU32Hex } from './util'
 
 function genRange (rng: Tinymt32.Rng, m: number): number {
-  return rng.gen() % m
+  return (rng.gen() >>> 0) % m
 }
 
 function skip (rng: Tinymt32.Rng, n: number): void {
@@ -84,6 +84,7 @@ export default function searchTinymtSeedJS (natures: number[], hasShinyCharm: bo
 
     if (found) {
       seeds.push(seed)
+      console.log(`[found]: ${toU32Hex(seed)}`)
     }
   })
 
