@@ -1,4 +1,5 @@
 import { Tinymt32 } from '@mizdra/tinymt'
+import { toU32Hex } from './util'
 
 function genRange (rng: Tinymt32.Rng, m: number): number {
   return rng.gen() % m
@@ -59,11 +60,27 @@ export default function searchTinymtSeedJS (natures: number[], hasShinyCharm: bo
     tmat: 0x3793FDFF,
   }
 
+  const start = Date.now()
   eachU32((seed) => {
     const rng = Tinymt32.fromSeed(param, seed)
 
     let found = natures
       .every(nature => nature === getEggNature(rng, hasShinyCharm))
+
+    if (seed % 0x0100_0000 === 0 && seed !== 0) {
+      const progress = (seed / 0xFFFF_FFFF * 100).toFixed(1)
+      const time = Date.now() - start
+      const allTime = time * (0xFFFF_FFFF / seed)
+      const remainingTime = allTime - time
+      const toMinutes = (ms: number) => (ms / 1000 / 60).toFixed(1)
+      console.log({
+        '進捗': `${progress}%`,
+        '現在のseed': toU32Hex(seed),
+        '経過時間': `${toMinutes(time)}分`,
+        '予想総計算時間': `${toMinutes(allTime)}分`,
+        '予想残り時間': `${toMinutes(remainingTime)}分`,
+      })
+    }
 
     if (found) {
       seeds.push(seed)
