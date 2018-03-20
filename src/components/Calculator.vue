@@ -3,14 +3,20 @@
     <h2>入力</h2>
 
     <el-form label-width="100px">
+      <el-form-item label="計算方式">
+        <el-radio-group v-model="mode">
+          <el-radio label="js">JavaScript</el-radio>
+          <el-radio label="wasm">WebAssembly</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item
         v-for="(nature, index) in natures"
         :key="index"
         :label="`${index + 1}匹目の性格`">
         <InputNature v-model="natures[index]" />
       </el-form-item>
-      <el-form-item>
-        <el-checkbox v-model="hasShinyCharm">光るお守り</el-checkbox>
+      <el-form-item label="光るお守り">
+        <el-checkbox v-model="hasShinyCharm">有効</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" :disabled="calculating" @click="onClick">計算開始</el-button>
@@ -31,12 +37,16 @@
 import Vue from 'vue'
 import { toU32Hex } from '../util'
 import InputNature from './InputNature.vue'
+import searchTinymtSeedJS from '../search-tinymt-seed'
+
+type Mode = 'js' | 'wasm'
 
 export default Vue.extend({
   name: 'Calculator',
   components: { InputNature },
   data () {
     return {
+      mode: 'wasm' as Mode,
       natures: [17, 24, 7, 16, 6, 20, 12, 18],
       hasShinyCharm: false,
       calculating: false,
@@ -46,19 +56,30 @@ export default Vue.extend({
   },
   methods: {
     toU32Hex,
-    async calculate (): Promise<Uint32Array> {
-      const { search_tinymt_seed: searchTinymtSeed } = await import('../wasm/lib')
-
-      const start = new Date()
-      const seeds = searchTinymtSeed(new Uint32Array(this.natures), this.hasShinyCharm)
-      const end = new Date()
-
-      this.time = end.getTime() - start.getTime()
-      return seeds
+    async calculate (): Promise<number[]> {
+      if (this.mode === 'js') {
+        return this.calculateJS()
+      } else if (this.mode === 'wasm') {
+        return this.calculateWASM()
+      } else {
+        throw Error(`(mode === ${JSON.stringify(this.mode)}) の値が不正です.`)
+      }
+    },
+    async calculateJS (): Promise<number[]> {
+      return searchTinymtSeedJS(this.natures, this.hasShinyCharm)
+    },
+    async calculateWASM (): Promise<number[]> {
+      const { search_tinymt_seed: searchTinymtSeedWASM } = await import('../wasm/lib')
+      return Array.from(searchTinymtSeedWASM(new Uint32Array(this.natures), this.hasShinyCharm))
     },
     async onClick (): Promise<void> {
       this.calculating = true
-      this.seeds = Array.from(await this.calculate())
+
+      const start = new Date()
+      this.seeds = await this.calculate()
+      const end = new Date()
+
+      this.time = end.getTime() - start.getTime()
       this.calculating = false
     },
   },
