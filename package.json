@@ -36,6 +36,7 @@
     "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
+    "@mizdra/tinymt": "^1.0.0",
     "element-ui": "^2.2.2",
     "tslib": "^1.9.0"
   }

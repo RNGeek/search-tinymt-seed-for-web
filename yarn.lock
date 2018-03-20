@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@mizdra/tinymt@^1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@mizdra/tinymt/-/tinymt-1.0.1.tgz#6bf473ea25acbecf70967998d1f1b6d838310408"
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
