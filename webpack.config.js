@@ -1,5 +1,6 @@
 const { resolve } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const rootPath = resolve(__dirname, '.')
 const srcPath = resolve(rootPath, './src')
@@ -46,5 +47,6 @@ module.exports = {
       template: resolve(rootPath, './index.html'),
       inject: true,
     }),
+    new VueLoaderPlugin(),
   ],
 }
