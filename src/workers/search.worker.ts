@@ -1,0 +1,131 @@
+const ctx: DedicatedWorkerGlobalScope = self as any
+
+import { Tinymt32 } from '@mizdra/tinymt'
+import { Action, Progress, Complete } from './action';
+import '../wasm/lib' // wasm_bindgen グローバルオブジェクトの読み込み
+import { search_tinymt_seed } from '../wasm/lib'
+import wasm from '../wasm/lib_bg.wasm'
+
+function genRange (rng: Tinymt32.Rng, m: number): number {
+  return (rng.gen() >>> 0) % m
+}
+
+function skip (rng: Tinymt32.Rng, n: number): void {
+  for (let i = 0; i < n; i++) rng.nextState()
+}
+
+function eachU32 (fn: (seed: number) => void): void {
+  let i = 0x000_00000
+  while (true) {
+    fn(i)
+    if (i === 0xFFFF_FFFF) break
+    i++
+  }
+}
+
+function getEggNature (rng: Tinymt32.Rng, hasShinyCharm: boolean): number {
+  skip(rng, 1) // gender
+  let nature = genRange(rng, 25) // nature
+  skip(rng, 1) // ability
+
+  // inheriting IVs
+  const inherit: boolean[] = Array(6).fill(false)
+  for (let i = 0; i < 3; i++) {
+    let r = genRange(rng, 6)
+    while (inherit[r]) {
+      r = genRange(rng, 6)
+    }
+    inherit[r] = true
+    skip(rng, 1)
+  }
+
+  skip(rng, 6) // IVs
+  skip(rng, 1) // EC
+  if (hasShinyCharm) {
+    skip(rng, 2) // shiny charm
+  }
+  // skip(rng, 1) // ball
+  skip(rng, 2) // unknown
+
+  return nature
+}
+
+function postProgressAction(foundSeeds: number[], seed: number) {
+  ctx.postMessage({
+    type: 'PROGRESS',
+    payload: {
+      foundSeeds: foundSeeds,
+      calculatingSeed: seed,
+    }
+  } as Progress)
+}
+
+function postCompleteAction(foundSeeds: number[]) {
+  ctx.postMessage({
+    type: 'COMPLETE',
+    payload: {
+      foundSeeds,
+    }
+  } as Complete)
+}
+
+function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): void {
+  const foundSeeds: number[] = []
+  let param: Tinymt32.Param = {
+    mat1: 0x8F7011EE,
+    mat2: 0xFC78FF1F,
+    tmat: 0x3793FDFF,
+  }
+
+  eachU32((seed) => {
+    const rng = Tinymt32.fromSeed(param, seed)
+
+    let found = natures
+      .every(nature => nature === getEggNature(rng, hasShinyCharm))
+
+    if (seed % 0x0100_0000 === 0 && seed !== 0) {
+      postProgressAction(foundSeeds, seed)
+    }
+
+    if (found) {
+      foundSeeds.push(seed)
+      postProgressAction(foundSeeds, seed)
+    }
+  })
+
+  postCompleteAction(foundSeeds)
+}
+
+async function searchTinymtSeedWASM(natures: number[], hasShinyCharm: boolean): Promise<void> {
+  // webpack のバグで Worker 内で Dynamic Import が利用できないので,
+  // *.wasm を fetch + WebAssembly.instantiateStreaming を使って読み込む
+  // ref: https://github.com/webpack/webpack/issues/7647
+  // const { search_tinymt_seed } = await import('../wasm/lib')
+
+  // ref: https://github.com/webpack/webpack/issues/7647#issuecomment-402772005
+  // ref: https://rustwasm.github.io/wasm-bindgen/print.html#no-es-modules
+  const wasm_bindgen = (ctx as any).wasm_bindgen
+  await wasm_bindgen(wasm) // wasm ファイルが読み込まれるまで待機
+  const searchTinymtSeed = wasm_bindgen.search_tinymt_seed as (typeof search_tinymt_seed)
+
+  const foundSeeds = Array.from(searchTinymtSeed(new Uint32Array(natures), hasShinyCharm))
+  postCompleteAction(foundSeeds)
+}
+
+ctx.onmessage = (event) => {
+  const action = event.data as Action
+  switch(action.type) {
+    case "SEARCH":
+      const { mode, natures, hasShinyCharm } = action.payload
+      if (mode === 'js')
+        searchTinymtSeedJS(natures, hasShinyCharm);
+      else if (mode === 'wasm')
+        searchTinymtSeedWASM(natures, hasShinyCharm)
+      else
+        throw new Error(`Invalid mode: ${mode}`)
+      break;
+
+    default:
+      // nothing
+  }
+}

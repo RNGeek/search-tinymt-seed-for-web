@@ -34,6 +34,15 @@ module.exports = {
         test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
         loader: 'file-loader',
       },
+
+      // webpack のバグで Worker 内で Dynamic Import が利用できないので,
+      // *.wasm を fetch + WebAssembly.instantiateStreaming を使って読み込む
+      // ref: https://github.com/webpack/webpack/issues/7647#issuecomment-402772005
+      {
+        test: /\.wasm$/,
+        loader: 'file-loader',
+        type: 'javascript/auto', // this disabled webpacks default handling of wasm
+      },
     ],
   },
 

@@ -37,9 +37,8 @@
 import Vue from 'vue'
 import { toU32Hex } from '../util'
 import InputNature from './InputNature.vue'
-import searchTinymtSeedJS from '../search-tinymt-seed'
-
-type Mode = 'js' | 'wasm'
+import { SearchWorkerManager, Result } from '../search-worker-manager'
+import { Mode } from '../workers/action'
 
 export default Vue.extend({
   name: 'Calculator',
@@ -56,30 +55,19 @@ export default Vue.extend({
   },
   methods: {
     toU32Hex,
-    async calculate (): Promise<number[]> {
-      if (this.mode === 'js') {
-        return this.calculateJS()
-      } else if (this.mode === 'wasm') {
-        return this.calculateWASM()
-      } else {
-        throw Error(`(mode === ${JSON.stringify(this.mode)}) の値が不正です.`)
-      }
-    },
-    async calculateJS (): Promise<number[]> {
-      return searchTinymtSeedJS(this.natures, this.hasShinyCharm)
-    },
-    async calculateWASM (): Promise<number[]> {
-      const { search_tinymt_seed: searchTinymtSeedWASM } = await import('../wasm/lib')
-      return Array.from(searchTinymtSeedWASM(new Uint32Array(this.natures), this.hasShinyCharm))
+    async calculate (): Promise<Result> {
+      const manager = new SearchWorkerManager();
+      const result = await manager.search(this.mode, this.natures, this.hasShinyCharm)
+      manager.terminate()
+      return result
     },
     async onClick (): Promise<void> {
       this.calculating = true
 
-      const start = new Date()
-      this.seeds = await this.calculate()
-      const end = new Date()
+      const result = await this.calculate()
+      this.seeds = result.foundSeeds
+      this.time = result.completingTime
 
-      this.time = end.getTime() - start.getTime()
       this.calculating = false
     },
   },
