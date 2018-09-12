@@ -1,6 +1,7 @@
 import { toU32Hex, toMinutes } from './util'
-import SearchWorker from 'worker-loader!./workers/search.worker'
 import { Search, Action, Mode } from './workers/action';
+
+declare const SEARCH_WORKER_PATH: string;
 
 export interface Result {
   foundSeeds: number[],
@@ -11,7 +12,7 @@ export class SearchWorkerManager {
   private worker: Worker
 
   constructor() {
-    this.worker = new SearchWorker()
+    this.worker = new Worker(SEARCH_WORKER_PATH)
   }
 
   search(mode: Mode, natures: number[], hasShinyCharm: boolean): Promise<Result> {
