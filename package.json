@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "build:wasm": "cargo build --release --target wasm32-unknown-unknown",
-    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/lib.wasm --out-dir src/wasm --no-modules",
+    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/lib.wasm --out-dir src/wasm",
     "build:js": "webpack --mode production",
     "build": "run-s build:wasm build:js",
     "dev:wasm": "cargo watch -i 'src/wasm/{lib_bg.wasm,lib.d.ts,lib.js}' -s 'yarn run build:wasm'",

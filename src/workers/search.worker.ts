@@ -2,9 +2,6 @@ const ctx: DedicatedWorkerGlobalScope = self as any
 
 import { Tinymt32 } from '@mizdra/tinymt'
 import { Action, Progress, Complete } from './action';
-import '../wasm/lib' // wasm_bindgen グローバルオブジェクトの読み込み
-import { search_tinymt_seed } from '../wasm/lib'
-import wasm from '../wasm/lib_bg.wasm'
 
 function genRange (rng: Tinymt32.Rng, m: number): number {
   return (rng.gen() >>> 0) % m
@@ -97,18 +94,9 @@ function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): void {
 }
 
 async function searchTinymtSeedWASM(natures: number[], hasShinyCharm: boolean): Promise<void> {
-  // webpack のバグで Worker 内で Dynamic Import が利用できないので,
-  // *.wasm を fetch + WebAssembly.instantiateStreaming を使って読み込む
-  // ref: https://github.com/webpack/webpack/issues/7647
-  // const { search_tinymt_seed } = await import('../wasm/lib')
+  const { search_tinymt_seed } = await import('../wasm/lib')
 
-  // ref: https://github.com/webpack/webpack/issues/7647#issuecomment-402772005
-  // ref: https://rustwasm.github.io/wasm-bindgen/print.html#no-es-modules
-  const wasm_bindgen = (ctx as any).wasm_bindgen
-  await wasm_bindgen(wasm) // wasm ファイルが読み込まれるまで待機
-  const searchTinymtSeed = wasm_bindgen.search_tinymt_seed as (typeof search_tinymt_seed)
-
-  const foundSeeds = Array.from(searchTinymtSeed(new Uint32Array(natures), hasShinyCharm))
+  const foundSeeds = Array.from(search_tinymt_seed(new Uint32Array(natures), hasShinyCharm))
   postCompleteAction(foundSeeds)
 }
 
