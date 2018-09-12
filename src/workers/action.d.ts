@@ -20,11 +20,7 @@ export interface Progress extends FSA {
   type: 'PROGRESS',
   payload: {
     foundSeeds: number[],
-    progressRate: number,
     calculatingSeed: number,
-    elapsedTime: number,
-    remainingTime: number,
-    completingTime: number,
   },
 }
 
@@ -32,6 +28,5 @@ export interface Complete extends FSA {
   type: 'COMPLETE',
   payload: {
     foundSeeds: number[],
-    completingTime: number,
   },
 }

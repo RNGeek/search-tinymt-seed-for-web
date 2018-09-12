@@ -50,30 +50,21 @@ function getEggNature (rng: Tinymt32.Rng, hasShinyCharm: boolean): number {
   return nature
 }
 
-function postProgressAction(startTime: number, foundSeeds: number[], seed: number) {
-  const progressRate = seed / 0xFFFF_FFFF * 100
-  const elapsedTime = Date.now() - startTime
-  const completingTime = elapsedTime * (0xFFFF_FFFF / seed)
-  const remainingTime = completingTime - elapsedTime
+function postProgressAction(foundSeeds: number[], seed: number) {
   ctx.postMessage({
     type: 'PROGRESS',
     payload: {
       foundSeeds: foundSeeds,
-      progressRate,
       calculatingSeed: seed,
-      elapsedTime,
-      remainingTime,
-      completingTime,
     }
   } as Progress)
 }
 
-function postCompleteAction(startTime: number, foundSeeds: number[]) {
+function postCompleteAction(foundSeeds: number[]) {
   ctx.postMessage({
     type: 'COMPLETE',
     payload: {
       foundSeeds,
-      completingTime: Date.now() - startTime,
     }
   } as Complete)
 }
@@ -86,7 +77,6 @@ function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): void {
     tmat: 0x3793FDFF,
   }
 
-  const start = Date.now()
   eachU32((seed) => {
     const rng = Tinymt32.fromSeed(param, seed)
 
@@ -94,16 +84,16 @@ function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): void {
       .every(nature => nature === getEggNature(rng, hasShinyCharm))
 
     if (seed % 0x0100_0000 === 0 && seed !== 0) {
-      postProgressAction(start, foundSeeds, seed)
+      postProgressAction(foundSeeds, seed)
     }
 
     if (found) {
       foundSeeds.push(seed)
-      postProgressAction(start, foundSeeds, seed)
+      postProgressAction(foundSeeds, seed)
     }
   })
 
-  postCompleteAction(start, foundSeeds)
+  postCompleteAction(foundSeeds)
 }
 
 async function searchTinymtSeedWASM(natures: number[], hasShinyCharm: boolean): Promise<void> {
@@ -118,9 +108,8 @@ async function searchTinymtSeedWASM(natures: number[], hasShinyCharm: boolean): 
   await wasm_bindgen(wasm) // wasm ファイルが読み込まれるまで待機
   const searchTinymtSeed = wasm_bindgen.search_tinymt_seed as (typeof search_tinymt_seed)
 
-  const start = Date.now()
   const foundSeeds = Array.from(searchTinymtSeed(new Uint32Array(natures), hasShinyCharm))
-  postCompleteAction(start, foundSeeds)
+  postCompleteAction(foundSeeds)
 }
 
 ctx.onmessage = (event) => {

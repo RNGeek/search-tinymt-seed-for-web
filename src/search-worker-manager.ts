@@ -16,6 +16,7 @@ export class SearchWorkerManager {
 
   search(mode: Mode, natures: number[], hasShinyCharm: boolean): Promise<Result> {
     return new Promise((resolve) => {
+      const start = Date.now()
       this.worker.postMessage({
         type: 'SEARCH',
         payload: {
@@ -29,19 +30,28 @@ export class SearchWorkerManager {
         const action = event.data as Action
         switch(action.type) {
           case "PROGRESS":
-            const { payload } = action
+            const { calculatingSeed, foundSeeds } = action.payload
+
+            const progressRate = (calculatingSeed / 0xFFFF_FFFF * 100).toFixed(1)
+            const elapsedTime = Date.now() - start
+            const completingTime = elapsedTime * (0xFFFF_FFFF / calculatingSeed)
+            const remainingTime = completingTime - elapsedTime
             console.log({
-              '進捗': `${payload.progressRate.toFixed(1)}%`,
-              '見つかったSeed': payload.foundSeeds.map(toU32Hex),
-              '現在のseed': toU32Hex(payload.calculatingSeed),
-              '経過時間': `${toMinutes(payload.elapsedTime)}分`,
-              '予想総計算時間': `${toMinutes(payload.completingTime)}分`,
-              '予想残り時間': `${toMinutes(payload.remainingTime)}分`,
+              '進捗': `${progressRate}%`,
+              '見つかったSeed': foundSeeds.map(toU32Hex),
+              '現在のseed': toU32Hex(calculatingSeed),
+              '経過時間': `${toMinutes(elapsedTime)}分`,
+              '予想総計算時間': `${toMinutes(completingTime)}分`,
+              '予想残り時間': `${toMinutes(remainingTime)}分`,
             })
             break;
   
           case "COMPLETE":
-            resolve(action.payload)
+            const end = Date.now()
+            resolve({
+              foundSeeds: action.payload.foundSeeds,
+              completingTime: end - start,
+            })
             return
           default:
             // nothing
