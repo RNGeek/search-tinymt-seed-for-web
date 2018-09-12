@@ -22,7 +22,10 @@ const baseConfig = {
         include: [srcPath],
       },
       { test: /\.vue$/, loader: 'vue-loader' },
-      { test: /\.css$/, loader: 'css-loader' },
+      {
+        test: /\.css$/,
+        use: [ 'vue-style-loader', 'css-loader' ],
+      },
       {
         test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
         loader: 'file-loader',
