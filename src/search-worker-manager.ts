@@ -2,7 +2,7 @@ import { toU32Hex, toMinutes } from './util'
 import SearchWorker from 'worker-loader!./workers/search.worker'
 import { Search, Action, Mode } from './workers/action';
 
-interface Result {
+export interface Result {
   foundSeeds: number[],
   completingTime: number,
 }

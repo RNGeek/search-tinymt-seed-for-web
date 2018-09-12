@@ -1,7 +1,7 @@
 const ctx: DedicatedWorkerGlobalScope = self as any
 
 import { Tinymt32 } from '@mizdra/tinymt'
-import { Action, Progress } from './action';
+import { Action, Progress, Complete } from './action';
 
 function genRange (rng: Tinymt32.Rng, m: number): number {
   return (rng.gen() >>> 0) % m
@@ -47,7 +47,7 @@ function getEggNature (rng: Tinymt32.Rng, hasShinyCharm: boolean): number {
   return nature
 }
 
-function postProgressInfo(startTime: number, foundSeeds: number[], seed: number) {
+function postProgressAction(startTime: number, foundSeeds: number[], seed: number) {
   const progressRate = seed / 0xFFFF_FFFF * 100
   const elapsedTime = Date.now() - startTime
   const completingTime = elapsedTime * (0xFFFF_FFFF / seed)
@@ -65,8 +65,18 @@ function postProgressInfo(startTime: number, foundSeeds: number[], seed: number)
   } as Progress)
 }
 
-function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): number[] {
-  const seeds: number[] = []
+function postCompleteAction(startTime: number, foundSeeds: number[]) {
+  ctx.postMessage({
+    type: 'COMPLETE',
+    payload: {
+      foundSeeds,
+      completingTime: Date.now() - startTime,
+    }
+  } as Complete)
+}
+
+function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): void {
+  const foundSeeds: number[] = []
   let param: Tinymt32.Param = {
     mat1: 0x8F7011EE,
     mat2: 0xFC78FF1F,
@@ -81,16 +91,24 @@ function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): number[
       .every(nature => nature === getEggNature(rng, hasShinyCharm))
 
     if (seed % 0x0100_0000 === 0 && seed !== 0) {
-      postProgressInfo(start, seeds, seed)
+      postProgressAction(start, foundSeeds, seed)
     }
 
     if (found) {
-      seeds.push(seed)
-      postProgressInfo(start, seeds, seed)
+      foundSeeds.push(seed)
+      postProgressAction(start, foundSeeds, seed)
     }
   })
 
-  return seeds
+  postCompleteAction(start, foundSeeds)
+}
+
+async function searchTinymtSeedWASM(natures: number[], hasShinyCharm: boolean): Promise<void> {
+  const { search_tinymt_seed } = await import('../wasm/lib')
+
+  const start = Date.now()
+  const foundSeeds = Array.from(search_tinymt_seed(new Uint32Array(natures), hasShinyCharm))
+  postCompleteAction(start, foundSeeds)
 }
 
 ctx.onmessage = (event) => {
@@ -100,9 +118,12 @@ ctx.onmessage = (event) => {
       const { mode, natures, hasShinyCharm } = action.payload
       if (mode === 'js')
         searchTinymtSeedJS(natures, hasShinyCharm);
+      else if (mode === 'wasm')
+        searchTinymtSeedWASM(natures, hasShinyCharm)
       else
-        throw new Error('Not implemented.')
+        throw new Error(`Invalid mode: ${mode}`)
       break;
+
     default:
       // nothing
   }
