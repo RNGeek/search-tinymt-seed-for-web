@@ -37,9 +37,8 @@
 import Vue from 'vue'
 import { toU32Hex } from '../util'
 import InputNature from './InputNature.vue'
-import searchTinymtSeedJS from '../search-tinymt-seed'
-
-type Mode = 'js' | 'wasm'
+import searchTinymtSeed from '../search-tinymt-seed'
+import { Mode } from '../workers/action'
 
 export default Vue.extend({
   name: 'Calculator',
@@ -66,7 +65,7 @@ export default Vue.extend({
       }
     },
     async calculateJS (): Promise<number[]> {
-      const result = await searchTinymtSeedJS(this.natures, this.hasShinyCharm)
+      const result = await searchTinymtSeed('js', this.natures, this.hasShinyCharm)
       return result.foundSeeds
     },
     async calculateWASM (): Promise<number[]> {

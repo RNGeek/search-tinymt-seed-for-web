@@ -97,8 +97,11 @@ ctx.onmessage = (event) => {
   const action = event.data as Action
   switch(action.type) {
     case "SEARCH":
-      const { natures, hasShinyCharm } = action.payload
-      searchTinymtSeedJS(natures, hasShinyCharm);
+      const { mode, natures, hasShinyCharm } = action.payload
+      if (mode === 'js')
+        searchTinymtSeedJS(natures, hasShinyCharm);
+      else
+        throw new Error('Not implemented.')
       break;
     default:
       // nothing

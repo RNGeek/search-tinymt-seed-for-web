@@ -1,6 +1,6 @@
 import { toU32Hex } from './util'
-import SearchTinymtSeedJSWorker from 'worker-loader!./workers/search-tinymt-seed-js.worker'
-import { Search, Action } from './workers/action';
+import SearchTinymtSeedWorker from 'worker-loader!./workers/search-tinymt-seed.worker'
+import { Search, Action, Mode } from './workers/action';
 
 const toMinutes = (ms: number) => (ms / 1000 / 60).toFixed(1)
 
@@ -9,9 +9,9 @@ interface Result {
   completingTime: number,
 }
 
-export default function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): Promise<Result> {
+export default function searchTinymtSeed (mode: Mode, natures: number[], hasShinyCharm: boolean): Promise<Result> {
   return new Promise((resolve) => {
-    const worker = new SearchTinymtSeedJSWorker();
+    const worker = new SearchTinymtSeedWorker()
   
     worker.onmessage = (event) => {
       const action = event.data as Action
@@ -39,6 +39,7 @@ export default function searchTinymtSeedJS (natures: number[], hasShinyCharm: bo
     worker.postMessage({
       type: 'SEARCH',
       payload: {
+        mode,
         natures,
         hasShinyCharm,
       }
