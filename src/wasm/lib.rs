@@ -4,6 +4,11 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 use tinymt::tinymt32;
 
+#[wasm_bindgen(module = "../workers/search.work")]
+extern {
+    fn postProgressAction(foundSeeds: &[u32], seed: u32) -> String;
+}
+
 trait Rng {
   fn gen_range(&mut self, m: u32) -> u32;
   fn skip(&mut self, n: usize);
@@ -69,7 +74,7 @@ pub fn search_tinymt_seed(natures: &[u32], has_shiny_charm: bool) -> Vec<u32> {
   assert_eq!(natures.len(), 8);
   natures.iter().for_each(|&nature| assert!(nature < 25));
 
-  let mut seeds: Vec<u32> = Vec::new();
+  let mut found_seeds: Vec<u32> = Vec::new();
   let param = tinymt32::Param {
     mat1: 0x8F7011EE,
     mat2: 0xFC78FF1F,
@@ -83,12 +88,18 @@ pub fn search_tinymt_seed(natures: &[u32], has_shiny_charm: bool) -> Vec<u32> {
       .iter()
       .all(|&nature| nature == get_egg_nature(&mut rng, has_shiny_charm));
 
+
+    if seed % 0x0100_0000 == 0 && seed != 0 {
+      postProgressAction(found_seeds.as_slice(), seed);
+    }
+
     if found {
-      seeds.push(seed);
+      found_seeds.push(seed);
+      postProgressAction(found_seeds.as_slice(), seed);
     }
   });
 
-  seeds
+  found_seeds
 }
 
 #[cfg(test)]

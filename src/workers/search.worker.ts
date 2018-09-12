@@ -50,7 +50,7 @@ function getEggNature (rng: Tinymt32.Rng, hasShinyCharm: boolean): number {
   return nature
 }
 
-function postProgressAction(foundSeeds: number[], seed: number) {
+export function postProgressAction(foundSeeds: number[], seed: number) {
   ctx.postMessage({
     type: 'PROGRESS',
     payload: {
