@@ -1,8 +1,6 @@
-import { toU32Hex } from './util'
+import { toU32Hex, toMinutes } from './util'
 import SearchTinymtSeedWorker from 'worker-loader!./workers/search-tinymt-seed.worker'
 import { Search, Action, Mode } from './workers/action';
-
-const toMinutes = (ms: number) => (ms / 1000 / 60).toFixed(1)
 
 interface Result {
   foundSeeds: number[],
