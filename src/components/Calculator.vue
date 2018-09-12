@@ -66,7 +66,8 @@ export default Vue.extend({
       }
     },
     async calculateJS (): Promise<number[]> {
-      return searchTinymtSeedJS(this.natures, this.hasShinyCharm)
+      const result = await searchTinymtSeedJS(this.natures, this.hasShinyCharm)
+      return result.foundSeeds
     },
     async calculateWASM (): Promise<number[]> {
       const { search_tinymt_seed: searchTinymtSeedWASM } = await import('../wasm/lib')

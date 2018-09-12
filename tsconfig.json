@@ -3,7 +3,7 @@
     /* Basic Options */
     // "outDir": "./dist",
     "target": "es5",
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom", "webworker"],
     "declaration": false,
 
     /* Module Options */
