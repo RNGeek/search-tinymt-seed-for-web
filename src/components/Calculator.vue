@@ -39,11 +39,7 @@
 
     <h2>Seed候補</h2>
     <p>計算時間: {{ toMinutes(realCompletingTime) }}分 ({{ realCompletingTime }}ms)</p>
-    <ul>
-      <li v-for="(seed, index) in foundSeeds" :key="index">
-        {{ toU32Hex(seed) }}
-      </li>
-    </ul>
+    <result-table :has-shiny-charm="hasShinyCharm" :found-seeds="foundSeeds" />
   </div>
 </template>
 
@@ -51,12 +47,13 @@
 import Vue from 'vue'
 import { toU32Hex, toMinutes } from '../util'
 import InputNature from './InputNature.vue'
+import ResultTable from './ResultTable.vue'
 import { SearchWorkerManager, Result, ProgressData } from '../search-worker-manager'
 import { Mode } from '../workers/action'
 
 export default Vue.extend({
   name: 'Calculator',
-  components: { InputNature },
+  components: { InputNature, ResultTable },
   data () {
     return {
       mode: 'wasm' as Mode,
