@@ -19,7 +19,8 @@
         <el-checkbox v-model="hasShinyCharm">有効</el-checkbox>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :disabled="calculating" @click="onClick">計算開始</el-button>
+        <el-button v-if="calculating" type="danger" @click="onCancel">キャンセル</el-button>
+        <el-button v-else type="primary" :disabled="calculating" @click="onCalculate">計算開始</el-button>
       </el-form-item>
     </el-form>
 
@@ -65,6 +66,7 @@ export default Vue.extend({
       start: 0,
       calculatingSeed: 0xFFFF_FFFF,
       now: 0,
+      manager: null as SearchWorkerManager | null,
     }
   },
   computed: {
@@ -89,6 +91,8 @@ export default Vue.extend({
     toMinutes,
     async calculate (): Promise<Result> {
       const manager = new SearchWorkerManager();
+      this.manager = manager
+
       manager.addProgressListener(progressData => this.updateProgress(progressData))
 
       this.start = Date.now()
@@ -103,7 +107,12 @@ export default Vue.extend({
       this.foundSeeds = foundSeeds
       this.now = Date.now()
     },
-    async onClick (): Promise<void> {
+    onCancel (): void {
+      if (this.manager === null) throw new Error('Invalid operation: onCancel')
+      this.calculating = false
+      this.manager.terminate()
+    },
+    async onCalculate (): Promise<void> {
       this.calculating = true
       this.calculatingSeed = 0
       this.foundSeeds = []
