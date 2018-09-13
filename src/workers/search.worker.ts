@@ -20,7 +20,7 @@ function eachU32 (fn: (seed: number) => void): void {
   }
 }
 
-function getEggNature (rng: Tinymt32.Rng, hasShinyCharm: boolean): number {
+export function getEggNature (rng: Tinymt32.Rng, hasShinyCharm: boolean): number {
   skip(rng, 1) // gender
   let nature = genRange(rng, 25) // nature
   skip(rng, 1) // ability
@@ -47,21 +47,21 @@ function getEggNature (rng: Tinymt32.Rng, hasShinyCharm: boolean): number {
   return nature
 }
 
-export function postProgressAction(foundSeeds: number[], seed: number) {
+export function postProgressAction(foundSeeds: number[] | Uint32Array, seed: number) {
   ctx.postMessage({
     type: 'PROGRESS',
     payload: {
-      foundSeeds: foundSeeds,
+      foundSeeds: Array.from(foundSeeds),
       calculatingSeed: seed,
     }
   } as Progress)
 }
 
-function postCompleteAction(foundSeeds: number[]) {
+function postCompleteAction(foundSeeds: number[] | Uint32Array) {
   ctx.postMessage({
     type: 'COMPLETE',
     payload: {
-      foundSeeds,
+      foundSeeds: Array.from(foundSeeds),
     }
   } as Complete)
 }
@@ -96,7 +96,7 @@ function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): void {
 async function searchTinymtSeedWASM(natures: number[], hasShinyCharm: boolean): Promise<void> {
   const { search_tinymt_seed } = await import('../wasm/lib')
 
-  const foundSeeds = Array.from(search_tinymt_seed(new Uint32Array(natures), hasShinyCharm))
+  const foundSeeds = search_tinymt_seed(new Uint32Array(natures), hasShinyCharm)
   postCompleteAction(foundSeeds)
 }
 
