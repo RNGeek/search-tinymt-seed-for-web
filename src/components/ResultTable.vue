@@ -22,16 +22,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Tinymt32 } from '@mizdra/tinymt';
-import { getEggNature } from '../workers/search.worker';
+import { getEggNature, GEN7_EGG_PARAM, NATURES } from '../rng';
 import { toU32Hex } from '../util';
-
-const NATURES = [
-  'がんばりや', 'さみしがり', 'ゆうかん', 'いじっぱり', 'やんちゃ',
-  'ずぶとい', 'すなお', 'のんき', 'わんぱく', 'のうてんき',
-  'おくびょう', 'せっかち', 'まじめ', 'ようき', 'むじゃき',
-  'ひかえめ', 'おっとり', 'れいせい', 'てれや', 'うっかりや',
-  'おだやか', 'おとなしい', 'なまいき', 'しんちょう', 'きまぐれ',
-]
 
 type PropType<T> = () => T
 
@@ -57,16 +49,10 @@ export default Vue.extend({
   },
   computed: {
     tableData(): any {
-      let param: Tinymt32.Param = {
-        mat1: 0x8F7011EE,
-        mat2: 0xFC78FF1F,
-        tmat: 0x3793FDFF,
-      }
-
       return this.foundSeeds.map(seed => {
-        const rng = Tinymt32.fromSeed(param, seed)
         let rowData: any = { seed: toU32Hex(seed) }
 
+        const rng = Tinymt32.fromSeed(GEN7_EGG_PARAM, seed)
         for (let i = 0; i < this.endNatureIndex; i++) {
           const nature = getEggNature(rng, this.hasShinyCharm)
           if (i < this.beginNatureIndex) continue;
