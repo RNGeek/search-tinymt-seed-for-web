@@ -1,17 +1,29 @@
-import { toU32Hex, toMinutes } from './util'
-import SearchWorker from 'worker-loader!./workers/search.worker'
 import { Search, Action, Mode } from './workers/action';
 
+declare const SEARCH_WORKER_PATH: string;
+
+export interface ProgressData {
+  calculatingSeed: number,
+  foundSeeds: number[],
+}
 export interface Result {
   foundSeeds: number[],
   completingTime: number,
 }
 
+type ProgressListener = (progressData: ProgressData) => void
+
 export class SearchWorkerManager {
   private worker: Worker
+  private progressListeners: ProgressListener[]
 
   constructor() {
-    this.worker = new SearchWorker()
+    this.worker = new Worker(SEARCH_WORKER_PATH)
+    this.progressListeners = []
+  }
+
+  addProgressListener(listener: ProgressListener) {
+    this.progressListeners.push(listener)
   }
 
   search(mode: Mode, natures: number[], hasShinyCharm: boolean): Promise<Result> {
@@ -30,20 +42,7 @@ export class SearchWorkerManager {
         const action = event.data as Action
         switch(action.type) {
           case "PROGRESS":
-            const { calculatingSeed, foundSeeds } = action.payload
-
-            const progressRate = (calculatingSeed / 0xFFFF_FFFF * 100).toFixed(1)
-            const elapsedTime = Date.now() - start
-            const completingTime = elapsedTime * (0xFFFF_FFFF / calculatingSeed)
-            const remainingTime = completingTime - elapsedTime
-            console.log({
-              '進捗': `${progressRate}%`,
-              '見つかったSeed': foundSeeds.map(toU32Hex),
-              '現在のseed': toU32Hex(calculatingSeed),
-              '経過時間': `${toMinutes(elapsedTime)}分`,
-              '予想総計算時間': `${toMinutes(completingTime)}分`,
-              '予想残り時間': `${toMinutes(remainingTime)}分`,
-            })
+            this.progressListeners.forEach(listener => listener(action.payload))
             break;
   
           case "COMPLETE":

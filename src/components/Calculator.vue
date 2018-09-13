@@ -23,53 +23,108 @@
       </el-form-item>
     </el-form>
 
+    <h2>進捗</h2>
+    <el-progress
+      :text-inside="true"
+      :stroke-width="18"
+      :percentage="progressRate"
+      :status="calculating ? undefined : 'success'" />
+    <div class="progress-description">
+      <span>検索中: {{ toU32Hex(calculatingSeed) }}</span>
+      /
+      <span>予想残り時間: {{ toMinutes(remainingTime) }}分</span>
+      /
+      <span>予想総計算時間: {{ toMinutes(completingTime) }}分</span>
+    </div>
+
     <h2>Seed候補</h2>
-    <p>計算時間: {{ (time / 1000 / 60).toFixed(1) }}分 ({{ time }}ms)</p>
-    <ul>
-      <li v-for="(seed, index) in seeds" :key="index">
-        {{ toU32Hex(seed) }}
-      </li>
-    </ul>
+    <p>計算時間: {{ toMinutes(realCompletingTime) }}分 ({{ realCompletingTime }}ms)</p>
+    <result-table :has-shiny-charm="hasShinyCharm" :found-seeds="foundSeeds" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { toU32Hex } from '../util'
+import { toU32Hex, toMinutes } from '../util'
 import InputNature from './InputNature.vue'
-import { SearchWorkerManager, Result } from '../search-worker-manager'
+import ResultTable from './ResultTable.vue'
+import { SearchWorkerManager, Result, ProgressData } from '../search-worker-manager'
 import { Mode } from '../workers/action'
 
 export default Vue.extend({
   name: 'Calculator',
-  components: { InputNature },
+  components: { InputNature, ResultTable },
   data () {
     return {
       mode: 'wasm' as Mode,
       natures: [17, 24, 7, 16, 6, 20, 12, 18],
       hasShinyCharm: false,
       calculating: false,
-      seeds: [] as number[],
-      time: 0,
+      foundSeeds: [] as number[],
+      realCompletingTime: 0,
+      start: 0,
+      calculatingSeed: 0xFFFF_FFFF,
+      now: 0,
     }
+  },
+  computed: {
+    progressRate(): number {
+      const val = this.calculatingSeed / 0xFFFF_FFFF * 100
+      return Math.floor(val * 10) / 10
+    },
+    elapsedTime(): number {
+      return this.now - this.start
+    },
+    completingTime(): number {
+      if (this.calculatingSeed === 0) return 0
+      return this.elapsedTime * (0xFFFF_FFFF / this.calculatingSeed)
+    },
+    remainingTime(): number {
+      if (this.calculatingSeed === 0) return 0
+      return this.completingTime - this.elapsedTime
+    },
   },
   methods: {
     toU32Hex,
+    toMinutes,
     async calculate (): Promise<Result> {
       const manager = new SearchWorkerManager();
+      manager.addProgressListener(progressData => this.updateProgress(progressData))
+
+      this.start = Date.now()
+
       const result = await manager.search(this.mode, this.natures, this.hasShinyCharm)
       manager.terminate()
       return result
     },
+    updateProgress(progressData: ProgressData): void {
+      const { calculatingSeed, foundSeeds } = progressData
+      this.calculatingSeed = calculatingSeed
+      this.foundSeeds = foundSeeds
+      this.now = Date.now()
+    },
     async onClick (): Promise<void> {
       this.calculating = true
+      this.calculatingSeed = 0
+      this.foundSeeds = []
+      this.now = Date.now()
 
       const result = await this.calculate()
-      this.seeds = result.foundSeeds
-      this.time = result.completingTime
+      this.foundSeeds = result.foundSeeds
+      this.realCompletingTime = result.completingTime
 
       this.calculating = false
     },
   },
 })
 </script>
+
+<style scoped>
+.progress-description {
+  color: #606060;
+  font-size: 0.8em;
+  text-align: right;
+  padding: 2px 0;
+}
+</style>
+
