@@ -4,7 +4,7 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 use tinymt::tinymt32;
 
-#[wasm_bindgen(module = "../workers/search.worker")]
+#[wasm_bindgen(module = "../workers/worker")]
 extern {
     fn postProgressAction(foundSeeds: &[u32], seed: u32) -> String;
 }

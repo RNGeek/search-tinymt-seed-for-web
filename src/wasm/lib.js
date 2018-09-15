@@ -1,6 +1,6 @@
 /* tslint:disable */
 import * as wasm from './lib_bg';
-import { postProgressAction } from '../workers/search.worker';
+import { postProgressAction } from '../workers/worker';
 
 let cachegetUint32Memory = null;
 function getUint32Memory() {
@@ -36,7 +36,7 @@ function passStringToWasm(arg) {
     return [ptr, buf.length];
 }
 
-export function __wbg_postProgressAction_3db76de32d1a08be(ret, arg0, arg1, arg2) {
+export function __wbg_postProgressAction_b9a42444ca9c766e(ret, arg0, arg1, arg2) {
     let varg0 = getArrayU32FromWasm(arg0, arg1);
     
     const [retptr, retlen] = passStringToWasm(postProgressAction(varg0, arg2));

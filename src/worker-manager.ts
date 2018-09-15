@@ -1,6 +1,6 @@
 import { Search, Action, Mode } from './workers/action';
 
-declare const SEARCH_WORKER_PATH: string;
+declare const WORKER_PATH: string;
 
 export interface ProgressData {
   calculatingSeed: number,
@@ -13,12 +13,12 @@ export interface Result {
 
 type ProgressListener = (progressData: ProgressData) => void
 
-export class SearchWorkerManager {
+export class WorkerManager {
   private worker: Worker
   private progressListeners: ProgressListener[]
 
   constructor() {
-    this.worker = new Worker(SEARCH_WORKER_PATH)
+    this.worker = new Worker(WORKER_PATH)
     this.progressListeners = []
   }
 

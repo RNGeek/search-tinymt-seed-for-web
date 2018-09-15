@@ -49,7 +49,7 @@ import Vue from 'vue'
 import { toU32Hex, toMinutes } from '../util'
 import InputNature from './InputNature.vue'
 import ResultTable from './ResultTable.vue'
-import { SearchWorkerManager, Result, ProgressData } from '../search-worker-manager'
+import { WorkerManager, Result, ProgressData } from '../worker-manager'
 import { Mode } from '../workers/action'
 
 export default Vue.extend({
@@ -66,7 +66,7 @@ export default Vue.extend({
       start: 0,
       calculatingSeed: 0xFFFF_FFFF,
       now: 0,
-      manager: null as SearchWorkerManager | null,
+      manager: null as WorkerManager | null,
     }
   },
   computed: {
@@ -90,7 +90,7 @@ export default Vue.extend({
     toU32Hex,
     toMinutes,
     async calculate (): Promise<Result> {
-      const manager = new SearchWorkerManager();
+      const manager = new WorkerManager();
       this.manager = manager
 
       manager.addProgressListener(progressData => this.updateProgress(progressData))

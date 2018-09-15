@@ -8,7 +8,7 @@ const rootPath = resolve(__dirname, '.')
 const srcPath = resolve(rootPath, './src')
 const distPath = resolve(rootPath, './dist')
 
-const SEARCH_WORKER_PATH = '/search.worker.js'
+const WORKER_PATH = '/worker.js'
 
 const baseConfig = {
   module: {
@@ -40,7 +40,7 @@ const baseConfig = {
   plugins: [
     new VueLoaderPlugin(),
     new webpack.DefinePlugin({
-      SEARCH_WORKER_PATH: JSON.stringify(SEARCH_WORKER_PATH),
+      WORKER_PATH: JSON.stringify(WORKER_PATH),
     }),
   ],
 }
@@ -74,13 +74,13 @@ const appConfig = webpackMerge(baseConfig, {
 const searchWorkerConfig = webpackMerge(baseConfig, {
   target: 'webworker',
   entry: {
-    'search.worker': [
-      resolve(srcPath, './workers/search.worker.ts'),
+    'worker': [
+      resolve(srcPath, './workers/worker.ts'),
     ],
   },
   output: {
     path: distPath,
-    filename: 'search.worker.js',
+    filename: 'worker.js',
   },
 })
 
