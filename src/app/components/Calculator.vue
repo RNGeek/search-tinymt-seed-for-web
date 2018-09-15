@@ -70,18 +70,18 @@ export default Vue.extend({
     }
   },
   computed: {
-    progressRate(): number {
+    progressRate (): number {
       const val = this.calculatingSeed / 0xFFFF_FFFF * 100
       return Math.floor(val * 10) / 10
     },
-    elapsedTime(): number {
+    elapsedTime (): number {
       return this.now - this.start
     },
-    completingTime(): number {
+    completingTime (): number {
       if (this.calculatingSeed === 0) return 0
       return this.elapsedTime * (0xFFFF_FFFF / this.calculatingSeed)
     },
-    remainingTime(): number {
+    remainingTime (): number {
       if (this.calculatingSeed === 0) return 0
       return this.completingTime - this.elapsedTime
     },
@@ -90,7 +90,7 @@ export default Vue.extend({
     toU32Hex,
     toMinutes,
     async calculate (): Promise<Result> {
-      const manager = new WorkerManager();
+      const manager = new WorkerManager()
       this.manager = manager
 
       manager.addProgressListener(progressData => this.updateProgress(progressData))
@@ -101,7 +101,7 @@ export default Vue.extend({
       manager.terminate()
       return result
     },
-    updateProgress(progressData: ProgressData): void {
+    updateProgress (progressData: ProgressData): void {
       const { calculatingSeed, foundSeeds } = progressData
       this.calculatingSeed = calculatingSeed
       this.foundSeeds = foundSeeds
@@ -136,4 +136,3 @@ export default Vue.extend({
   padding: 2px 0;
 }
 </style>
-

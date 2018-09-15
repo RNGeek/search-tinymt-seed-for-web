@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { NATURES } from '../rng';
+import { NATURES } from '../rng'
 
 export default Vue.extend({
   name: 'InputNature',

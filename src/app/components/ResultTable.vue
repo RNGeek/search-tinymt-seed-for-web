@@ -8,7 +8,6 @@
       width="140">
     </el-table-column>
 
-
     <el-table-column
       v-for="index in range(beginNatureIndex, endNatureIndex)"
       :key="index"
@@ -21,9 +20,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Tinymt32 } from '@mizdra/tinymt';
-import { getEggNature, GEN7_EGG_PARAM, NATURES } from '../rng';
-import { toU32Hex } from '../util';
+import { Tinymt32 } from '@mizdra/tinymt'
+import { getEggNature, GEN7_EGG_PARAM, NATURES } from '../rng'
+import { toU32Hex } from '../util'
 
 type PropType<T> = () => T
 
@@ -48,24 +47,24 @@ export default Vue.extend({
     },
   },
   computed: {
-    tableData(): any {
+    tableData (): any {
       return this.foundSeeds.map(seed => {
         let rowData: any = { seed: toU32Hex(seed) }
 
         const rng = Tinymt32.fromSeed(GEN7_EGG_PARAM, seed)
         for (let i = 0; i < this.endNatureIndex; i++) {
           const nature = getEggNature(rng, this.hasShinyCharm)
-          if (i < this.beginNatureIndex) continue;
+          if (i < this.beginNatureIndex) continue
 
           rowData[`nature${i}`] = NATURES[nature]
         }
 
         return rowData
       })
-    }
+    },
   },
   methods: {
-    range(begin: number, end: number): number[] {
+    range (begin: number, end: number): number[] {
       const length = end - begin
       return Array.from(Array(length).keys()).map(i => i + begin)
     },

@@ -1,6 +1,6 @@
-import { Search, Action, Mode } from '../worker/action';
+import { Search, Action, Mode } from '../worker/action'
 
-declare const WORKER_PATH: string;
+declare const WORKER_PATH: string
 
 export interface ProgressData {
   calculatingSeed: number,
@@ -17,16 +17,16 @@ export class WorkerManager {
   private worker: Worker
   private progressListeners: ProgressListener[]
 
-  constructor() {
+  constructor () {
     this.worker = new Worker(WORKER_PATH)
     this.progressListeners = []
   }
 
-  addProgressListener(listener: ProgressListener) {
+  addProgressListener (listener: ProgressListener) {
     this.progressListeners.push(listener)
   }
 
-  search(mode: Mode, natures: number[], hasShinyCharm: boolean): Promise<Result> {
+  search (mode: Mode, natures: number[], hasShinyCharm: boolean): Promise<Result> {
     return new Promise((resolve) => {
       const start = Date.now()
       this.worker.postMessage({
@@ -35,23 +35,24 @@ export class WorkerManager {
           mode,
           natures,
           hasShinyCharm,
-        }
+        },
       } as Search)
 
       this.worker.onmessage = (event) => {
         const action = event.data as Action
-        switch(action.type) {
-          case "PROGRESS":
+        switch (action.type) {
+          case 'PROGRESS':
             this.progressListeners.forEach(listener => listener(action.payload))
-            break;
-  
-          case "COMPLETE":
+            break
+
+          case 'COMPLETE':
             const end = Date.now()
             resolve({
               foundSeeds: action.payload.foundSeeds,
               completingTime: end - start,
             })
-            return
+            break
+
           default:
             // nothing
         }
@@ -59,7 +60,7 @@ export class WorkerManager {
     })
   }
 
-  terminate(): void {
+  terminate (): void {
     this.worker.terminate()
   }
 }
