@@ -17,14 +17,6 @@ const WORKER_PATH = '/worker.js'
 const baseConfig = {
   module: {
     rules: [
-      {
-        test: /\.ts$/,
-        loader: 'ts-loader',
-        options: {
-          appendTsSuffixTo: [/\.vue$/],
-        },
-        include: [srcPath],
-      },
       { test: /\.vue$/, loader: 'vue-loader' },
       {
         test: /\.css$/,
@@ -61,6 +53,20 @@ const appConfig = webpackMerge(baseConfig, {
     filename: '[name].[hash].js',
   },
 
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+          configFile: resolve(appPath, './tsconfig.json'),
+        },
+        include: [srcPath],
+      },
+    ],
+  },
+
   plugins: [
     new HtmlWebpackPlugin({
       filename: resolve(distPath, './index.html'),
@@ -85,6 +91,19 @@ const searchWorkerConfig = webpackMerge(baseConfig, {
   output: {
     path: distPath,
     filename: 'worker.js',
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        options: {
+          configFile: resolve(workerPath, './tsconfig.json'),
+        },
+        include: [srcPath],
+      },
+    ],
   },
 })
 
