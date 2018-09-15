@@ -1,4 +1,4 @@
-import { Search, Action, Mode } from './workers/action';
+import { Search, Action, Mode } from '../worker/action';
 
 declare const WORKER_PATH: string;
 

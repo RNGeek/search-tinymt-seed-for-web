@@ -8,6 +8,10 @@ const rootPath = resolve(__dirname, '.')
 const srcPath = resolve(rootPath, './src')
 const distPath = resolve(rootPath, './dist')
 
+const appPath = resolve(srcPath, './app')
+const workerPath = resolve(srcPath, './worker')
+// const wasmPath = resolve(srcPath, './wasm')
+
 const WORKER_PATH = '/worker.js'
 
 const baseConfig = {
@@ -49,7 +53,7 @@ const appConfig = webpackMerge(baseConfig, {
   entry: {
     app: [
       'tslib',
-      resolve(srcPath, './index.ts'),
+      resolve(appPath, './index.ts'),
     ],
   },
   output: {
@@ -75,7 +79,7 @@ const searchWorkerConfig = webpackMerge(baseConfig, {
   target: 'webworker',
   entry: {
     'worker': [
-      resolve(srcPath, './workers/worker.ts'),
+      resolve(workerPath, './worker.ts'),
     ],
   },
   output: {

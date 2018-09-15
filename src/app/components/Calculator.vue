@@ -50,7 +50,7 @@ import { toU32Hex, toMinutes } from '../util'
 import InputNature from './InputNature.vue'
 import ResultTable from './ResultTable.vue'
 import { WorkerManager, Result, ProgressData } from '../worker-manager'
-import { Mode } from '../workers/action'
+import { Mode } from '../../worker/action'
 
 export default Vue.extend({
   name: 'Calculator',

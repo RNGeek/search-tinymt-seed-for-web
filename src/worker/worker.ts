@@ -2,7 +2,7 @@ const ctx: DedicatedWorkerGlobalScope = self as any
 
 import { Tinymt32 } from '@mizdra/tinymt'
 import { Action, Progress, Complete } from './action';
-import { eachU32, getEggNature, GEN7_EGG_PARAM } from '../rng';
+import { eachU32, getEggNature, GEN7_EGG_PARAM } from '../app/rng';
 
 export function postProgressAction(foundSeeds: number[] | Uint32Array, seed: number) {
   ctx.postMessage({
