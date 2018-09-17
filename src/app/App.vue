@@ -5,6 +5,9 @@
         <img class="app-icon" alt="Application Icon" width="48px" height="48px" src="/img/icon.svg" />
         <span class="app-detail">search-tinymt-seed on WebAssembly</span>
       </h1>
+      <nav class="nav">
+        <span><a href="https://github.com/mizdra/search-tinymt-seed" target=_blank rel="noopener noreferrer">GitHub</a></span>
+      </nav>
     </el-header>
     <el-main><Calculator/></el-main>
     <el-footer class="footer">
@@ -38,6 +41,7 @@ html, body {
   border-bottom: #ccc 1px solid;
   background-color: #644bd8;
   color: #fafafa;
+  box-sizing: content-box;
 }
 .app-title {
   display: inline;
@@ -60,6 +64,29 @@ html, body {
   .app-detail {
     font-size: 25px;
   }
+}
+
+.nav {
+  line-height: 60px;
+  vertical-align: text-bottom;
+  display: inline;
+  float: right;
+}
+.nav > span {
+  display: block;
+}
+.nav a:hover {
+  background: #534788;
+}
+.nav a {
+  display: block;
+  height: 100%;
+  color: #fff;
+  padding: 0 10px;
+  text-decoration: none;
+}
+.nav a:visited {
+  color: #fff;
 }
 
 .footer {
