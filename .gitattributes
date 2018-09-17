@@ -1,4 +1,4 @@
 yarn.lock binary
-/src/wasm/lib_bg.wasm binary
-/src/wasm/lib.d.ts binary
-/src/wasm/lib.js binary
+/src/wasm/calculator_bg.wasm binary
+/src/wasm/calculator.d.ts binary
+/src/wasm/calculator.js binary

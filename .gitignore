@@ -57,6 +57,6 @@ Cargo.lock
 
 ### User configuration
 /dist
-/src/wasm/lib_bg.wasm
-/src/wasm/lib.d.ts
-/src/wasm/lib.js
+/src/wasm/calculator_bg.wasm
+/src/wasm/calculator.d.ts
+/src/wasm/calculator.js

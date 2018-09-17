@@ -8,10 +8,10 @@
   "private": true,
   "scripts": {
     "build:wasm": "cargo build --release --target wasm32-unknown-unknown",
-    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/lib.wasm --out-dir src/wasm",
+    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/calculator.wasm --out-dir src/wasm",
     "build:js": "webpack --mode production",
     "build": "run-s build:wasm build:js",
-    "dev:wasm": "cargo watch -i 'src/wasm/{lib_bg.wasm,lib.d.ts,lib.js}' -s 'yarn run build:wasm'",
+    "dev:wasm": "cargo watch -i 'src/wasm/{calculator_bg.wasm,calculator.d.ts,calculator.js}' -s 'yarn run build:wasm'",
     "dev:js": "webpack-dev-server --mode development",
     "dev": "run-p dev:wasm dev:js",
     "lint": "eslint --ignore-pattern 'src/wasm' 'src/**/*.{js,ts,vue}'",
