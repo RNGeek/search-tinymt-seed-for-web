@@ -2,10 +2,12 @@ const { resolve } = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const webpackMerge = require('webpack-merge');
+const webpackMerge = require('webpack-merge')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const rootPath = resolve(__dirname, '.')
 const srcPath = resolve(rootPath, './src')
+const staticPath = resolve(rootPath, './static')
 const distPath = resolve(rootPath, './dist')
 
 const appPath = resolve(srcPath, './app')
@@ -38,6 +40,7 @@ const baseConfig = {
     new webpack.DefinePlugin({
       WORKER_PATH: JSON.stringify(WORKER_PATH),
     }),
+    new CopyWebpackPlugin([{ from: staticPath, to: distPath }]),
   ],
 }
 
