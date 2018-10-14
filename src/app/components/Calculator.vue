@@ -103,8 +103,10 @@ export default Vue.extend({
     },
     updateProgress (progressData: ProgressData): void {
       const { calculatingSeed, foundSeeds } = progressData
-      this.calculatingSeed = calculatingSeed
-      this.foundSeeds = foundSeeds
+
+      // 下32bit以外は切り捨てる
+      this.calculatingSeed = calculatingSeed >>> 0
+      this.foundSeeds = foundSeeds.map(seed => seed >>> 0)
       this.now = Date.now()
     },
     onCancel (): void {
@@ -119,7 +121,8 @@ export default Vue.extend({
       this.now = Date.now()
 
       const result = await this.calculate()
-      this.foundSeeds = result.foundSeeds
+      // 下32bit以外は切り捨てる
+      this.foundSeeds = result.foundSeeds.map(seed => seed >>> 0)
       this.realCompletingTime = result.completingTime
 
       this.calculating = false
