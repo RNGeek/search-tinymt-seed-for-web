@@ -1,28 +1,27 @@
 # search-tinymt-seed-for-web
-[RNGeek/search-tinymt-seed](https://github.com/RNGeek/search-tinymt-seed) のRust実装です.
+[RNGeek/search-tinymt-seed](https://github.com/RNGeek/search-tinymt-seed) のWeb移植版.
 
 ## Requirements
-Rust 及び `wasm32-unknown-unknown` ターゲットを有効化する必要があります.
-また `cargo-watch`, `wasm-bindgen-cli` のインストールが必要です.
+Rust toolchain 及び `cargo-watch`, `wasm-bindgen-cli` のインストールが必要です.
+
+また. nightly チャネルと `wasm32-unknown-unknown` ターゲットを有効化する必要があります.
 
 
 ```bash
-# Rust のインストール
+# Rust toolchain のインストール
 # ref: https://www.rust-lang.org/ja-JP/install.html
 $ curl https://sh.rustup.rs -sSf | sh
 $ export PATH="$HOME/.cargo/bin:$PATH"
 $ rustc --version
 
 
-## nightlyの有効化
+## nightly チャネルの有効化
 $ rustup install nightly
-$ rustup default nightly
-$ rustc --version
+$ rustc +nightly --version
 
 
-# `wasm32-unknown-unknown` ターゲットの有効化
+# nightly チャネルでの `wasm32-unknown-unknown` ターゲットの有効化
 # ref: https://www.hellorust.com/news/native-wasm-target.html
-$ rustup update
 $ rustup target add wasm32-unknown-unknown --toolchain nightly
 
 
@@ -39,6 +38,12 @@ $ cd search-tinymt-seed-for-web
 $ cargo check
 $ yarn install
 
-# Start webpack-dev-server
+# RustとJavaScriptを自動コンパイルし, webpack-dev-server を立ち上げる
 $ yarn run dev
 ```
+
+## npm-scripts
+- `yarn run dev`: RustとJavaScriptを自動コンパイルし, webpack-dev-server を立ち上げる
+- `yarn run lint`: lint を実行する
+- `yarn run test`: テストを実行する
+- `yarn run build`: 本番環境向けにビルドする
