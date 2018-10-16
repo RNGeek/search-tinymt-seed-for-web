@@ -3,10 +3,10 @@
     <el-header class="header">
       <h1 class="app-title">
         <img class="app-icon" alt="Application Icon" width="48px" height="48px" src="/img/icon.svg" />
-        <span class="app-detail">search-tinymt-seed on WebAssembly</span>
+        <span class="app-detail">search-tinymt-seed-for-web</span>
       </h1>
       <nav class="nav">
-        <span><a href="https://github.com/mizdra/search-tinymt-seed" target=_blank rel="noopener noreferrer">GitHub</a></span>
+        <span><a href="https://github.com/mizdra/search-tinymt-seed-for-web" target=_blank rel="noopener noreferrer">GitHub</a></span>
       </nav>
     </el-header>
     <el-main><Calculator/></el-main>

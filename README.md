@@ -1,4 +1,4 @@
-# search-tinymt-seed
+# search-tinymt-seed-for-web
 [RNGeek/search-tinymt-seed](https://github.com/RNGeek/search-tinymt-seed) のRust実装です.
 
 ## Requirements
@@ -34,8 +34,8 @@ $ cargo install wasm-bindgen-cli
 ## Setup
 ```bash
 # Setup
-$ git clone https://github.com/mizdra/search-tinymt-seed.git
-$ cd search-tinymt-seed
+$ git clone https://github.com/mizdra/search-tinymt-seed-for-web.git
+$ cd search-tinymt-seed-for-web
 $ cargo check
 $ yarn install
 

@@ -1,8 +1,8 @@
 {
-  "name": "search-tinymt-seed",
+  "name": "search-tinymt-seed-for-web",
   "version": "0.0.0",
   "main": "index.js",
-  "repository": "https://github.com/mizdra/search-tinymt-seed.git",
+  "repository": "https://github.com/mizdra/search-tinymt-seed-for-web.git",
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,
