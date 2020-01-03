@@ -7,7 +7,11 @@ use tinymt::tinymt32;
 // NOTE: 本当はパスが適切に解釈される `module` を使うのが望ましいが, バグのため使用できないので `raw_module` で代用している
 // ref: https://github.com/rustwasm/wasm-bindgen/issues/1921
 // #[wasm_bindgen(module = "/src/worker/worker.ts")]
-#[wasm_bindgen(raw_module = "../src/worker/worker")]
+
+// NOTE: `wasm-pack test` では target/wasm32-unknown-unknown/wbg-tmp 配下にグルーコードが生成されるため,
+// ワーカーへのパスもそれに合わせて変える.
+#[cfg_attr(not(test), wasm_bindgen(raw_module = "../src/worker/worker"))]
+#[cfg_attr(test, wasm_bindgen(raw_module = "../../../src/worker/worker.ts"))]
 extern {
     fn postProgressAction(foundSeeds: &[u32], seed: u32);
 }
@@ -108,9 +112,10 @@ pub fn search_tinymt_seed(natures: &[u32], has_shiny_charm: bool) -> Vec<u32> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  extern crate wasm_bindgen_test;
+  use wasm_bindgen_test::*;
 
-  #[test]
-  #[ignore]
+  #[wasm_bindgen_test]
   fn case1() {
     let natures: [u32; 8] = [17, 24, 7, 16, 6, 20, 12, 18];
     let has_shiny_charm = false;
@@ -119,8 +124,7 @@ mod tests {
     assert_eq!(actual, expected);
   }
 
-  #[test]
-  #[ignore]
+  #[wasm_bindgen_test]
   fn case2() {
     let natures: [u32; 8] = [17, 19, 24, 7, 5, 18, 1, 16];
     let has_shiny_charm = true;
