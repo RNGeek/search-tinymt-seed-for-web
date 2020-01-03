@@ -10,7 +10,9 @@
     "build": "webpack --mode production",
     "dev": "webpack-dev-server --mode development",
     "lint": "eslint --ignore-pattern 'src/wasm' 'src/**/*.{js,ts,vue}'",
-    "test": "cargo test --release -- --ignored --test-threads=2"
+    "test": "cargo test --release -- --ignored --test-threads=2",
+    "deploy": "netlify deploy --dir dist --prod",
+    "predeploy": "run-s lint test build"
   },
   "devDependencies": {
     "@vue/eslint-config-standard": "^3.0.0-beta.6",
