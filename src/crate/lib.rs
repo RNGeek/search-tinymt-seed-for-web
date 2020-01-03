@@ -6,14 +6,20 @@ use tinymt::tinymt32;
 
 // NOTE: 本当はパスが適切に解釈される `module` を使うのが望ましいが, バグのため使用できないので `raw_module` で代用している
 // ref: https://github.com/rustwasm/wasm-bindgen/issues/1921
-// #[wasm_bindgen(module = "/src/worker/worker.ts")]
-
-// NOTE: `wasm-pack test` では target/wasm32-unknown-unknown/wbg-tmp 配下にグルーコードが生成されるため,
-// ワーカーへのパスもそれに合わせて変える.
-#[cfg_attr(not(test), wasm_bindgen(raw_module = "../src/worker/worker"))]
-#[cfg_attr(test, wasm_bindgen(raw_module = "../../../src/worker/worker.ts"))]
+// #[wasm_bindgen(module = "/src/crate/import")]
+#[cfg(not(test))]
+#[wasm_bindgen(raw_module = "../src/crate/import")]
 extern {
     fn postProgressAction(foundSeeds: &[u32], seed: u32);
+}
+
+// NOTE: `wasm-pack test` によるテスト環境では `postMessage` のようなAPIは提供されていないので,
+// import.js の `postProgressAction` を呼び出すと実行時エラーになる. そのため, テスト環境では
+// ダミーの実装にすり替え, 実行時エラーを回避している.
+#[cfg(test)]
+#[allow(non_snake_case)]
+fn postProgressAction(_foundSeeds: &[u32], _seed: u32) {
+  // noop
 }
 
 trait Rng {
