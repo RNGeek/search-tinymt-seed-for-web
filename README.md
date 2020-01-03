@@ -2,9 +2,7 @@
 [RNGeek/search-tinymt-seed](https://github.com/RNGeek/search-tinymt-seed) のWeb移植版.
 
 ## Requirements
-Rust toolchain 及び `cargo-watch`, `wasm-bindgen-cli` のインストールが必要です.
-
-また, `rustup target add` で `wasm32-unknown-unknown` ターゲットを有効化する必要があります.
+Rust toolchain のインストールが必要です.
 
 
 ```bash
@@ -13,14 +11,7 @@ Rust toolchain 及び `cargo-watch`, `wasm-bindgen-cli` のインストールが
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 $ export PATH="$HOME/.cargo/bin:$PATH"
 $ rustc --version
-
-# ref: https://www.hellorust.com/news/native-wasm-target.html
-$ rustup target add wasm32-unknown-unknown
-
-
-# `cargo-watch`, `wasm-bindgen-cli` のインストール
-$ cargo install cargo-watch
-$ cargo install wasm-bindgen-cli
+rustc 1.40.0 (73528e339 2019-12-16)
 ```
 
 ## Setup
