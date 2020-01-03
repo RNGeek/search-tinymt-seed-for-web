@@ -4,6 +4,9 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 use tinymt::tinymt32;
 
+// NOTE: 本当はパスが適切に解釈される `module` を使うのが望ましいが, バグのため使用できないので `raw_module` で代用している
+// ref: https://github.com/rustwasm/wasm-bindgen/issues/1921
+// #[wasm_bindgen(module = "/src/worker/worker.ts")]
 #[wasm_bindgen(raw_module = "../src/worker/worker")]
 extern {
     fn postProgressAction(foundSeeds: &[u32], seed: u32);
