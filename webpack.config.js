@@ -15,8 +15,6 @@ const cratePath = resolve(rootPath, '.')
 const appPath = resolve(srcPath, './app')
 const workerPath = resolve(srcPath, './worker')
 
-const WORKER_PATH = '/worker.js'
-
 const baseConfig = {
   module: {
     rules: [
@@ -40,9 +38,6 @@ const baseConfig = {
     new VueLoaderPlugin(),
     new WasmPackPlugin({
       crateDirectory: cratePath,
-    }),
-    new webpack.DefinePlugin({
-      WORKER_PATH: JSON.stringify(WORKER_PATH),
     }),
     new CopyWebpackPlugin([{ from: staticPath, to: distPath }]),
   ],

@@ -1,7 +1,5 @@
 import { Search, Action, Mode } from '../worker/action'
 
-declare const WORKER_PATH: string
-
 export interface ProgressData {
   calculatingSeed: number,
   foundSeeds: number[],
@@ -18,7 +16,8 @@ export class WorkerManager {
   private progressListeners: ProgressListener[]
 
   constructor () {
-    this.worker = new Worker(WORKER_PATH)
+    // NOTE: workerは `https://hostname/worker.js` に配置されている
+    this.worker = new Worker('/worker.js')
     this.progressListeners = []
   }
 
