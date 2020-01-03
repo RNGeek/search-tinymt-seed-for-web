@@ -4,25 +4,18 @@
 ## Requirements
 Rust toolchain 及び `cargo-watch`, `wasm-bindgen-cli` のインストールが必要です.
 
-また. nightly チャネルと `wasm32-unknown-unknown` ターゲットを有効化する必要があります.
+また, `rustup target add` で `wasm32-unknown-unknown` ターゲットを有効化する必要があります.
 
 
 ```bash
 # Rust toolchain のインストール
 # ref: https://www.rust-lang.org/ja-JP/install.html
-$ curl https://sh.rustup.rs -sSf | sh
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 $ export PATH="$HOME/.cargo/bin:$PATH"
 $ rustc --version
 
-
-## nightly チャネルの有効化
-$ rustup install nightly
-$ rustc +nightly --version
-
-
-# nightly チャネルでの `wasm32-unknown-unknown` ターゲットの有効化
 # ref: https://www.hellorust.com/news/native-wasm-target.html
-$ rustup target add wasm32-unknown-unknown --toolchain nightly
+$ rustup target add wasm32-unknown-unknown
 
 
 # `cargo-watch`, `wasm-bindgen-cli` のインストール
