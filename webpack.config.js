@@ -38,6 +38,7 @@ const baseConfig = {
     new VueLoaderPlugin(),
     new WasmPackPlugin({
       crateDirectory: cratePath,
+      forceMode: 'release',
     }),
     new CopyWebpackPlugin([{ from: staticPath, to: distPath }]),
   ],
