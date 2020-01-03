@@ -28,7 +28,7 @@ function searchTinymtSeedJS (natures: number[], hasShinyCharm: boolean): void {
 }
 
 async function searchTinymtSeedWASM (natures: number[], hasShinyCharm: boolean): Promise<void> {
-  const { search_tinymt_seed: searchTinymtSeed } = await import('../wasm/calculator')
+  const { search_tinymt_seed: searchTinymtSeed } = await import('../../pkg')
 
   const foundSeeds = searchTinymtSeed(new Uint32Array(natures), hasShinyCharm)
   postCompleteAction(foundSeeds)

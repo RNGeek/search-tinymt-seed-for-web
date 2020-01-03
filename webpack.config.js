@@ -4,15 +4,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const webpackMerge = require('webpack-merge')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin')
 
 const rootPath = resolve(__dirname, '.')
 const srcPath = resolve(rootPath, './src')
 const staticPath = resolve(rootPath, './static')
 const distPath = resolve(rootPath, './dist')
+const cratePath = resolve(rootPath, '.')
 
 const appPath = resolve(srcPath, './app')
 const workerPath = resolve(srcPath, './worker')
-// const wasmPath = resolve(srcPath, './wasm')
 
 const WORKER_PATH = '/worker.js'
 
@@ -37,6 +38,9 @@ const baseConfig = {
 
   plugins: [
     new VueLoaderPlugin(),
+    new WasmPackPlugin({
+      crateDirectory: cratePath,
+    }),
     new webpack.DefinePlugin({
       WORKER_PATH: JSON.stringify(WORKER_PATH),
     }),

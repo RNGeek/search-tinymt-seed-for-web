@@ -9,5 +9,5 @@ wasm-bindgen = "0.2"
 tinymt = { git = "https://github.com/mizdra/rust-tinymt", tag = "0.1.0" }
 
 [lib]
-path = "./src/wasm/lib.rs"
+path = "src/crate/lib.rs"
 crate-type = ["cdylib"]

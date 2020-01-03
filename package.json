@@ -7,19 +7,15 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build:wasm": "cargo build --release --target wasm32-unknown-unknown",
-    "postbuild:wasm": "wasm-bindgen target/wasm32-unknown-unknown/release/calculator.wasm --out-dir src/wasm",
-    "build:js": "webpack --mode production",
-    "build": "run-s build:wasm build:js",
-    "dev:wasm": "cargo watch -i 'src/wasm/{calculator_bg.wasm,calculator.d.ts,calculator.js}' -s 'yarn run build:wasm'",
-    "dev:js": "webpack-dev-server --mode development",
-    "dev": "run-p dev:wasm dev:js",
+    "build": "webpack --mode production",
+    "dev": "webpack-dev-server --mode development",
     "lint": "eslint --ignore-pattern 'src/wasm' 'src/**/*.{js,ts,vue}'",
     "test": "cargo test --release -- --ignored --test-threads=2"
   },
   "devDependencies": {
     "@vue/eslint-config-standard": "^3.0.0-beta.6",
     "@vue/eslint-config-typescript": "^3.0.0-beta.6",
+    "@wasm-tool/wasm-pack-plugin": "^1.1.0",
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^1.0.0",
     "eslint": "^5.5.0",
