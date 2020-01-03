@@ -6,7 +6,7 @@ use tinymt::tinymt32;
 
 #[wasm_bindgen(raw_module = "../worker/worker")]
 extern {
-    fn postProgressAction(foundSeeds: &[u32], seed: u32) -> String;
+    fn postProgressAction(foundSeeds: &[u32], seed: u32);
 }
 
 trait Rng {
