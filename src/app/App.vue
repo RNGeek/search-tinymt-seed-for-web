@@ -10,8 +10,13 @@
       </nav>
     </el-header>
     <el-main><Calculator/></el-main>
-    <el-footer class="footer">
-      &copy; 2018 <a href="https://mizdra.net" target="_blank">mizdra</a>.
+    <el-footer height="auto" class="footer">
+      <h5>商標情報</h5>
+      <p>ポケットモンスター・ポケモン・Pokémon・は任天堂・クリーチャーズ・ゲームフリークの登録商標です. 当ツールは @mizdra 個人により運営されており, 株式会社ポケモン及びその関連会社とは一切関係ありません.</p>
+      <h5>ライセンス情報</h5>
+      <p>ポケモンに関するコンテンツの一切の権利は株式会社ポケモン, 及び関連会社に帰属します. コンテンツの扱いには細心の注意を払っておりますが, 万一ご意見・ご要望等があれば pp.mizdra@gmail.com までご連絡下さい.</p>
+      <p>なお, 当ツール自体の著作権は @mizdra に帰属します.</p>
+      <p>&copy; 2018 <a href="https://mizdra.net" target="_blank">mizdra</a>.</p>
     </el-footer>
   </el-container>
 </template>
@@ -95,5 +100,6 @@ html, body {
   border-top: 1px #ddd solid;
   margin-top: 30px;
   padding: 20px;
+  color: #666;
 }
 </style>
